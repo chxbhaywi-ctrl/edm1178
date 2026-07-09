@@ -6,6 +6,8 @@ workflows:
     environment:
       node: 20
       java: 17
+      vars:
+        GRADLE_OPTS: "-Xmx3g -XX:MaxMetaspaceSize=512m"
     cache:
       cache_paths:
         - ~/.gradle/caches
@@ -25,8 +27,6 @@ workflows:
           cd artifacts/sms-forwarder/android
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon --quiet
-        environment:
-          GRADLE_OPTS: "-Xmx3g -XX:MaxMetaspaceSize=512m"
     artifacts:
       - artifacts/sms-forwarder/android/app/build/outputs/apk/release/*.apk
     publishing:
