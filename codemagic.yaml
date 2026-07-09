@@ -13,7 +13,9 @@ workflows:
         - $CM_BUILD_DIR/artifacts/sms-forwarder/node_modules
     scripts:
       - name: Install dependencies
-        script: pnpm install --no-frozen-lockfile --ignore-scripts
+        script: |
+          cd artifacts/sms-forwarder
+          pnpm install --no-frozen-lockfile
       - name: Expo prebuild
         script: |
           cd artifacts/sms-forwarder
