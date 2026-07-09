@@ -12,8 +12,6 @@ workflows:
         - ~/.gradle/wrapper
         - $CM_BUILD_DIR/artifacts/sms-forwarder/node_modules
     scripts:
-      - name: Install pnpm
-        script: npm install -g pnpm
       - name: Install dependencies
         script: pnpm install --frozen-lockfile
       - name: Expo prebuild
