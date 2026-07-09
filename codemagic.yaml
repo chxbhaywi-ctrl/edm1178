@@ -13,7 +13,7 @@ workflows:
         - node_modules
     scripts:
       - name: Install dependencies
-        script: yarn install --non-interactive
+        script: yarn install
       - name: Expo prebuild
         script: yarn expo prebuild --platform android --clean --no-install
       - name: Build release APK
