@@ -1,3 +1,37 @@
-git add codemagic.yaml
-git commit -m "Update Codemagic configuration"
-git push origin main
+workflows:
+  android-apk:
+    name: Android APK Build
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      node: 20
+      java: 17
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - ~/.gradle/wrapper
+        - $CM_BUILD_DIR/artifacts/sms-forwarder/node_modules
+    scripts:
+      - name: Install pnpm
+        script: npm install -g pnpm
+      - name: Install dependencies
+        script: pnpm install --frozen-lockfile
+      - name: Expo prebuild
+        script: |
+          cd artifacts/sms-forwarder
+          pnpm exec expo prebuild --platform android --clean --no-install
+      - name: Build release APK
+        script: |
+          export GRADLE_OPTS="-Xmx3g -XX:MaxMetaspaceSize=512m"
+          cd artifacts/sms-forwarder/android
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --quiet
+    artifacts:
+      - artifacts/sms-forwarder/android/app/build/outputs/apk/release/*.apk
+    publishing:
+      email:
+        recipients:
+          - $CM_SUBMITTER_EMAIL
+        notify:
+          success: true
+          failure: true
