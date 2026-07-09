@@ -10,24 +10,21 @@ workflows:
       cache_paths:
         - ~/.gradle/caches
         - ~/.gradle/wrapper
-        - $CM_BUILD_DIR/artifacts/sms-forwarder/node_modules
+        - node_modules
     scripts:
       - name: Install dependencies
-        script: |
-          cd artifacts/sms-forwarder
-          pnpm install --no-frozen-lockfile
+        script: yarn install --non-interactive
       - name: Expo prebuild
-        script: |
-          cd artifacts/sms-forwarder
-          pnpm exec expo prebuild --platform android --clean --no-install
+        script: yarn expo prebuild --platform android --clean --no-install
       - name: Build release APK
         script: |
-          export GRADLE_OPTS="-Xmx3g -XX:MaxMetaspaceSize=512m"
-          cd artifacts/sms-forwarder/android
+          cd android
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon --quiet
+        environment:
+          GRADLE_OPTS: "-Xmx3g -XX:MaxMetaspaceSize=512m"
     artifacts:
-      - artifacts/sms-forwarder/android/app/build/outputs/apk/release/*.apk
+      - android/app/build/outputs/apk/release/*.apk
     publishing:
       email:
         recipients:
