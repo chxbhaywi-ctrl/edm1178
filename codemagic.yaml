@@ -14,10 +14,10 @@ workflows:
     scripts:
       - name: Install dependencies
         script: |
-          touch yarn.lock
-          yarn install
+          rm -f /Users/builder/.yarnrc.yml /Users/builder/package.json
+          pnpm install --no-frozen-lockfile
       - name: Expo prebuild
-        script: yarn expo prebuild --platform android --clean --no-install
+        script: pnpm exec expo prebuild --platform android --clean --no-install
       - name: Build release APK
         script: |
           export GRADLE_OPTS="-Xmx3g -XX:MaxMetaspaceSize=512m"
