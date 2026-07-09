@@ -1,1 +1,35 @@
-
+workflows:
+  android-apk:
+    name: Android APK Build
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      node: 20
+      java: 17
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - ~/.gradle/wrapper
+        - node_modules
+    scripts:
+      - name: Install dependencies
+        script: |
+          touch yarn.lock
+          yarn install
+      - name: Expo prebuild
+        script: yarn expo prebuild --platform android --clean --no-install
+      - name: Build release APK
+        script: |
+          export GRADLE_OPTS="-Xmx3g -XX:MaxMetaspaceSize=512m"
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --quiet
+    artifacts:
+      - android/app/build/outputs/apk/release/*.apk
+    publishing:
+      email:
+        recipients:
+          - chxbhaywi@gmail.com
+        notify:
+          success: true
+          failure: true
