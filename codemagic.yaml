@@ -18,11 +18,10 @@ workflows:
         script: yarn expo prebuild --platform android --clean --no-install
       - name: Build release APK
         script: |
+          export GRADLE_OPTS="-Xmx3g -XX:MaxMetaspaceSize=512m"
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon --quiet
-        environment:
-          GRADLE_OPTS: "-Xmx3g -XX:MaxMetaspaceSize=512m"
     artifacts:
       - android/app/build/outputs/apk/release/*.apk
     publishing:
